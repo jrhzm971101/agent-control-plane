@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 站点标识与 AgentScope 官网（java.agentscope.io）保持一致：
+         首选 SVG（任意 DPI 下都清晰），PNG 作为不支持 SVG favicon 的兜底。
+         两个文件都在 public/ 下。这里写绝对路径是安全的：vite 构建时会把
+         index.html 里的绝对引用按 base 重写成 <base>/favicon.svg，
+         所以部署到门户的子路径（/agent/）也不用改这一行。 -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <title>Agent Platform · 编排与运行控制台</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

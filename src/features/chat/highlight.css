@@ -1,0 +1,84 @@
+/*
+ * 代码高亮的配色。
+ *
+ * 为什么不用 highlight.js 自带的主题包（node_modules/highlight.js/styles/*.css）：
+ * 那些主题各自带底色、描边、圆角，引进来等于在页面里塞进第二套皮肤 —— 代码块会变成
+ * 「另一个世界的盒子」，和周围由设计令牌控制的元素对不上。本项目的规矩是颜色只有
+ * src/styles/tokens.css 一个来源，所以这里只做一件事：把 hljs 的语义类映射到既有令牌。
+ *
+ * 刻意**不设**底色与描边：那两块归 pages/ChatPage.vue 的 `.bub__md :deep(pre)` 管。
+ * 两边都写会互相覆盖，而 scoped 选择器（`.bub__md[data-v-x] pre`）的权重更高，
+ * 结果是「改了主题没反应」—— 与其留一个会失效的复写点，不如一开始就不写。
+ *
+ * 色轮只用 5 个：紫（关键字）、绿（字符串）、蓝（数字 / 属性 / 标签）、
+ * 棕（函数名）、灰（注释）。再多就没人分得清了，反而不如纯文本好读。
+ */
+
+/* 关键字、内置函数、类型、字面量：紫，与主色呼应 */
+.hljs-keyword,
+.hljs-built_in,
+.hljs-type,
+.hljs-literal,
+.hljs-doctag,
+.hljs-selector-tag,
+.hljs-template-tag {
+  color: var(--pri-ink);
+}
+
+/* 字符串与正则：绿 */
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-meta .hljs-string {
+  color: var(--grn);
+}
+
+/* 数字、属性名、变量、标签名、选择器：蓝 */
+.hljs-number,
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-meta,
+.hljs-meta .hljs-keyword {
+  color: var(--blu);
+}
+
+/* 函数名与章节标题：棕，和上面的蓝拉开，扫代码时能一眼找到「在调什么」 */
+.hljs-title,
+.hljs-title.function_,
+.hljs-title.class_,
+.hljs-section {
+  color: var(--amb);
+}
+
+/* 注释与引用：灰斜体。注释是代码里唯一「可以不读」的部分，弱化它比强调它有用 */
+.hljs-comment,
+.hljs-quote {
+  color: var(--t3);
+  font-style: italic;
+}
+
+/* diff 的删除行：红。加行在上面按字符串处理，所以成对出现时不会看成同一类 */
+.hljs-deletion {
+  color: var(--red);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 600;
+}
+.hljs-link {
+  color: var(--pri-ink);
+  text-decoration: underline;
+}

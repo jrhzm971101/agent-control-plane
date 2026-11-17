@@ -1,0 +1,504 @@
+/*
+ * Element Plus 主题层：把组件库的 CSS 变量与结构样式映射到 tokens.css。
+ *
+ * 只做两件事：
+ *   1. 变量映射 —— 组件库的每个颜色都指向令牌，页面里不要再写死颜色
+ *   2. 尺寸统一 —— 控件一律 32px、表格行一律 44px、表头 42px
+ * 尺寸不能各页各写：工具栏里的输入框和表格里的行高只要有一个不一致，整页就对不齐。
+ */
+
+/* ============ 变量映射 ============ */
+:root {
+  /* 主色阶：Element 需要 light-3/5/7/8/9 五档，按 #5252FF 手工给，不用算法混色，
+     避免混出来的紫偏灰、和令牌对不上。 */
+  --el-color-primary: var(--pri);
+  --el-color-primary-light-3: #7c7cff;
+  --el-color-primary-light-5: #9d9dff;
+  --el-color-primary-light-7: #c3c3fd;
+  --el-color-primary-light-8: var(--pri-soft-2);
+  --el-color-primary-light-9: var(--pri-soft);
+  --el-color-primary-dark-2: var(--pri-hover);
+
+  --el-color-success: var(--grn);
+  --el-color-success-light-9: var(--grn-bg);
+  --el-color-warning: var(--amb);
+  --el-color-warning-light-9: var(--amb-bg);
+  --el-color-danger: var(--red);
+  --el-color-danger-light-9: var(--red-bg);
+  --el-color-error: var(--red);
+  --el-color-error-light-9: var(--red-bg);
+  --el-color-info: var(--t2);
+  --el-color-info-light-9: var(--panel-soft);
+
+  --el-text-color-primary: var(--t1);
+  --el-text-color-regular: var(--t2);
+  --el-text-color-secondary: var(--t3);
+  --el-text-color-placeholder: var(--t3);
+  --el-text-color-disabled: var(--t3);
+
+  --el-border-color: var(--bd);
+  --el-border-color-light: var(--bd);
+  --el-border-color-lighter: var(--bd-soft);
+  --el-border-color-extra-light: var(--bd-soft);
+  --el-border-color-hover: var(--bd-strong);
+  --el-border-color-darker: var(--bd-strong);
+
+  --el-fill-color: var(--panel-soft);
+  --el-fill-color-light: var(--panel-soft);
+  --el-fill-color-lighter: var(--panel-soft);
+  --el-fill-color-blank: var(--panel);
+
+  --el-bg-color: var(--panel);
+  --el-bg-color-page: var(--bg);
+  --el-bg-color-overlay: var(--panel);
+
+  --el-font-family: var(--sans);
+  --el-font-size-base: 14px;
+  --el-border-radius-base: var(--r-md);
+  --el-border-radius-small: var(--r-sm);
+  --el-border-radius-round: 999px;
+
+  --el-box-shadow-light: var(--sh-card-hover);
+  --el-box-shadow: var(--sh-pop);
+  --el-box-shadow-dark: var(--sh-pop);
+
+  --el-disabled-bg-color: var(--panel-soft);
+  --el-disabled-text-color: var(--t3);
+  --el-disabled-border-color: var(--bd);
+
+  --el-transition-duration: var(--dur);
+  --el-transition-duration-fast: 0.12s;
+}
+
+/* ============ 按钮 ============ */
+.el-button {
+  height: var(--ctl-h);
+  padding: 0 13px;
+  /* 6px：按钮比卡片(8px)小一档，视觉上「控件比容器更收」 */
+  border-radius: var(--r-sm);
+  font-weight: 500;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.el-button > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.el-button--large {
+  height: var(--ctl-h-lg);
+}
+.el-button--small {
+  height: 30px;
+  padding: 0 11px;
+}
+.el-button--primary {
+  --el-button-bg-color: var(--pri);
+  --el-button-border-color: var(--pri);
+  --el-button-hover-bg-color: var(--pri-hover);
+  --el-button-hover-border-color: var(--pri-hover);
+  --el-button-active-bg-color: var(--pri-active);
+  --el-button-active-border-color: var(--pri-active);
+}
+/* 次级按钮默认就是白底描边，不需要额外 class */
+.el-button--default:not(.is-text):not(.is-link) {
+  --el-button-bg-color: var(--panel);
+  --el-button-border-color: var(--bd);
+  --el-button-hover-bg-color: var(--panel-soft);
+  --el-button-hover-border-color: var(--bd-strong);
+  --el-button-hover-text-color: var(--t1);
+  --el-button-active-bg-color: var(--panel-tint);
+  --el-button-active-border-color: var(--pri-line);
+}
+/* 危险按钮在表格行里出现得很频繁（删除 / 下线），实心红会把整行的重心拉走，
+   所以统一压成「浅红底 + 红字」的弱化样式。 */
+.el-button--danger:not(.is-text):not(.is-link) {
+  --el-button-bg-color: var(--red-bg);
+  --el-button-border-color: var(--red-line);
+  --el-button-text-color: var(--red);
+  --el-button-hover-bg-color: var(--red);
+  --el-button-hover-border-color: var(--red);
+  --el-button-hover-text-color: #fff;
+}
+.el-button.is-link,
+.el-button.is-text {
+  height: auto;
+  padding: 0;
+}
+/*
+ * 文本按钮的描边一律透明。
+ * Element Plus 在禁用态下会把 border-color 换成浅灰，而 is-text 自己的
+ * border-color: transparent 优先级不够 —— 表格操作列里禁用按钮会显出一个个
+ * 小方块，看起来像按钮错位。
+ */
+.el-button.is-text,
+.el-button.is-link,
+.el-button.is-text.is-disabled,
+.el-button.is-link.is-disabled,
+.el-button.is-text:disabled,
+.el-button.is-link:disabled {
+  border-color: transparent;
+  background: transparent;
+}
+.el-button + .el-button {
+  margin-left: var(--s2);
+}
+
+/* 详情页「更多」菜单：删除是破坏性动作，单独用红色标出来，避免与普通导航项混淆。 */
+.agent-more-menu .el-dropdown-menu__item.is-danger {
+  color: var(--red);
+}
+.agent-more-menu .el-dropdown-menu__item.is-danger:not(.is-disabled):hover {
+  background: var(--red-bg);
+}
+
+/* ============ 输入 / 选择 / 日期 ============ */
+.el-input,
+.el-select,
+.el-date-editor {
+  --el-input-height: var(--ctl-h);
+  /*
+   * Element Plus 让内层比外层矮 2px，把差额留给 wrapper 的 1px 上下内边距。
+   * 下面把 wrapper 的上下内边距收成 0（改成纯 1px 描边），就必须把内层补回来，
+   * 否则输入框实高只有 30px，和同一条筛选栏里的 select / button（32px）差 2px。
+   */
+  --el-input-inner-height: var(--ctl-h);
+}
+.el-input__wrapper,
+.el-select__wrapper,
+.el-textarea__inner {
+  /* 与按钮同一档 6px：输入框、下拉、按钮排在同一条筛选栏里，圆角必须一致 */
+  border-radius: var(--r-sm);
+  box-shadow: 0 0 0 1px var(--bd) inset;
+  transition: box-shadow var(--dur) var(--ease);
+}
+.el-input__wrapper {
+  padding: 0 11px;
+}
+.el-select__wrapper {
+  padding: 4px 11px;
+  min-height: var(--ctl-h);
+}
+.el-input__wrapper:hover,
+.el-select__wrapper:hover,
+.el-textarea__inner:hover {
+  box-shadow: 0 0 0 1px var(--bd-strong) inset;
+}
+/* 焦点环：2px 实色在浅底上不够稳，用 1px 描边 + 3px 浅紫光晕 */
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused,
+.el-textarea__inner:focus {
+  box-shadow: 0 0 0 1px var(--pri) inset, 0 0 0 3px var(--pri-soft);
+}
+.el-input.is-disabled .el-input__wrapper,
+.el-select.is-disabled .el-select__wrapper {
+  box-shadow: 0 0 0 1px var(--bd) inset;
+}
+.el-input__inner::placeholder,
+.el-textarea__inner::placeholder {
+  color: var(--t3);
+}
+
+/* 下拉浮层 */
+.el-popper.is-light,
+.el-select__popper,
+.el-picker__popper {
+  border: 1px solid var(--bd);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-pop);
+}
+.el-select-dropdown__item {
+  height: 32px;
+  line-height: 32px;
+  font-size: 13.5px;
+  border-radius: var(--r-sm);
+  margin: 1px 6px;
+  padding: 0 10px;
+}
+.el-select-dropdown__item.is-selected {
+  color: var(--pri-ink);
+  background: var(--pri-soft);
+  font-weight: 550;
+}
+
+/* ============ 表格 ============ */
+/*
+ * 列宽约定（踩过坑，改列宽前先看这段）：
+ * Element Plus 的 min-width 是**下限不是弹性值** —— 当所有列的
+ * 「width || min-width」之和超过容器宽度时，表格直接进入 scrollX 模式、
+ * 所有列停在 min-width 上，整个表格横向滚动（视觉上像被裁掉）。
+ * 所以列宽要按「最窄的内容区」定：整宽页面按 ~1100px 预算，
+ * .split 主列里的表格按 ~640px 预算；详情/数字/开关给固定 width，
+ * 名称与描述给 min-width 让它们在宽屏下自己长开。
+ *
+ * 行高统一在下面用 height 控制：无论页面写 size="small" 还是默认，
+ * 数据行都是 44px、表头 42px，这样多张表摞在一起才是齐的。
+ */
+.el-table {
+  --el-table-border-color: var(--bd-soft);
+  /* 表头与卡片同为白色，改用一条更清晰的底线区分；浅紫底留给页脚摘要条，
+     不再让表头和页脚共用同一种填充。 */
+  --el-table-header-bg-color: var(--panel);
+  --el-table-header-text-color: var(--t2);
+  --el-table-row-hover-bg-color: var(--panel-tint);
+  --el-table-text-color: var(--t1);
+  --el-table-bg-color: transparent;
+  --el-table-tr-bg-color: transparent;
+  --el-table-expanded-cell-bg-color: var(--panel-soft);
+  font-size: 13.5px;
+}
+
+/* 表底那根线由容器负责，表格自己不要再画一条 */
+.el-table__inner-wrapper::before {
+  display: none;
+}
+
+.el-table th.el-table__cell {
+  height: var(--head-h);
+  padding: 0;
+  background: var(--panel);
+  border-bottom: 1px solid var(--bd);
+  vertical-align: middle;
+}
+.el-table th.el-table__cell > .cell {
+  /* 表头是列的标题：用主文字色 + 更粗字重，和数据行的常规字重拉开一档，
+     扫表时先看到列名，再落到具体数据。 */
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t1);
+  letter-spacing: 0.01em;
+}
+
+.el-table td.el-table__cell {
+  height: var(--row-h);
+  padding: 0;
+  border-bottom: 1px solid var(--bd-soft);
+  vertical-align: middle;
+}
+.el-table tr:last-child > td.el-table__cell {
+  border-bottom: none;
+}
+
+.el-table .cell {
+  padding: 0 var(--s4);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+/*
+ * 表格里的选择框。
+ *
+ * 两件事：Element Plus 默认给 .el-checkbox 加 30px 右外边距；
+ * 而 .cell 左右各 16px 内边距，在选择列里只剩 10px 内容宽 ——
+ * 14px 的复选框溢出后触发 .cell 的 text-overflow: ellipsis，
+ * 表头和每一行都会多出半个省略号（看起来像「□…」）。
+ */
+.el-table .el-checkbox {
+  margin-right: 0;
+}
+
+/* 选择列：不需要单元格内边距，复选框居中即可 */
+.el-table .col-check .cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/*
+ * 复选框圆角单独给 4px。
+ * --el-border-radius-small 是 6px（给输入框用的），套在 14px 的复选框上
+ * 会圆成一个近似圆形 —— 丢掉了「方框 = 可勾选」的识别度。
+ */
+.el-checkbox__inner {
+  border-radius: 4px;
+}
+
+/*
+ * 固定列必须有不透明底色 + 阴影。
+ *
+ * 阴影负责压住滚动过去的内容，不加的话右侧固定列会把中间的列「切一半」。
+ * 底色则是必须的：上面把 --el-table-tr-bg-color 设成了 transparent（让卡片
+ * 自身的底色透上来），而 Element Plus 给固定列的样式正好是 `background: inherit`
+ * —— 固定列继承到 transparent，窗口收窄、后面的列滚到它底下时两行文字会叠在一起。
+ *
+ * 选择器必须写到这份权重：EP 那条是 .el-table__body-wrapper tr td.<class>，
+ * 只写 .el-table .el-table-fixed-column--right 会被它盖掉（实测无效）。
+ * 底色用 --panel 而不是 --el-table-bg-color，因为后者此刻就是 transparent。
+ * 行悬停 / 当前行的规则在本文件更靠后，同权重时后者胜出，所以悬停仍然正常。
+ */
+.el-table .el-table__body-wrapper tr td.el-table-fixed-column--right {
+  background: var(--panel);
+  box-shadow: -8px 0 8px -8px rgba(11, 11, 15, 0.14);
+}
+.el-table .el-table__body-wrapper tr td.el-table-fixed-column--left {
+  background: var(--panel);
+  box-shadow: 8px 0 8px -8px rgba(11, 11, 15, 0.14);
+}
+
+/* 行悬停与当前行：悬停用浅紫底，当前行再加左侧紫条，保证不靠颜色单打独斗 */
+.el-table__body tr:hover > td.el-table__cell {
+  background: var(--panel-tint);
+}
+.el-table__body tr.current-row > td.el-table__cell {
+  background: var(--pri-soft);
+}
+.el-table__body tr.current-row > td.el-table__cell:first-child {
+  box-shadow: inset 2px 0 0 var(--pri);
+}
+
+.el-table .el-table__empty-block {
+  background: var(--panel);
+}
+.el-table__empty-text {
+  color: var(--t3);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* 固定列的投影：用描边代替阴影，和整体「只靠描边分层」一致 */
+.el-table__fixed-right::before,
+.el-table__fixed::before {
+  background-color: var(--bd);
+}
+
+/* 排序 / 筛选图标 */
+.el-table__column-filter-trigger,
+.el-table .caret-wrapper {
+  color: var(--t3);
+}
+.el-table th.el-table__cell.is-sortable:hover,
+.el-table th.el-table__cell.is-filtered {
+  color: var(--pri-ink);
+}
+
+/* ============ 分页 ============ */
+.el-pagination {
+  --el-pagination-button-bg-color: var(--panel);
+  --el-pagination-hover-color: var(--pri);
+  font-weight: 500;
+}
+.el-pagination button,
+.el-pager li {
+  border-radius: var(--r-sm);
+  min-width: 34px;
+  height: 34px;
+  line-height: 34px;
+  font-size: 13.5px;
+}
+.el-pager li.is-active {
+  background: var(--pri);
+  color: #fff;
+}
+
+/* ============ 标签页 ============ */
+.el-tabs__header {
+  margin-bottom: var(--s4);
+}
+.el-tabs__item {
+  height: 38px;
+  line-height: 38px;
+  font-size: 14px;
+  color: var(--t2);
+  padding: 0 var(--s4) !important;
+}
+.el-tabs__item.is-active {
+  color: var(--pri-ink);
+  font-weight: 600;
+}
+.el-tabs__active-bar {
+  height: 2px;
+  border-radius: 2px;
+}
+.el-tabs__nav-wrap::after {
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--bd) 8%, var(--bd) 92%, transparent);
+}
+
+/* ============ 卡片 / 对话框 / 抽屉 ============ */
+.el-card {
+  border-radius: var(--r-md);
+  border-color: var(--bd);
+  box-shadow: var(--sh-card);
+}
+.el-dialog {
+  border-radius: var(--r-lg);
+  padding: 0;
+  overflow: hidden;
+  box-shadow: var(--sh-pop);
+}
+.el-dialog__header {
+  margin: 0;
+  padding: var(--s4) var(--s5);
+  border-bottom: 1px solid var(--bd-soft);
+  font-size: 15px;
+  font-weight: 600;
+}
+.el-dialog__body {
+  padding: var(--s5);
+  color: var(--t2);
+}
+.el-dialog__footer {
+  padding: var(--s3) var(--s5) var(--s4);
+  border-top: 1px solid var(--bd-soft);
+}
+.el-drawer__header {
+  margin: 0;
+  padding: var(--s4) var(--s5);
+  border-bottom: 1px solid var(--bd-soft);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--t1);
+}
+.el-drawer__body {
+  padding: var(--s5);
+}
+
+/* ============ 描述列表 ============ */
+.el-descriptions__label {
+  color: var(--t3);
+  font-weight: 400;
+}
+.el-descriptions__content {
+  color: var(--t2);
+}
+
+/* ============ 开关 / 复选 / 单选 ============ */
+.el-switch {
+  --el-switch-on-color: var(--pri);
+  --el-switch-off-color: #cbd0dd;
+}
+/*
+ * 开关悬停：不改颜色 —— 开/关色是状态语义，跟着鼠标变会让人误以为状态变了。
+ * 只在外圈加一层极浅光环，和输入框的悬停描边是同一套反馈语言。
+ */
+.el-switch__core {
+  transition: box-shadow var(--dur) var(--ease);
+}
+.el-switch:not(.is-disabled):hover .el-switch__core {
+  box-shadow: 0 0 0 3px var(--panel-tint);
+}
+.el-checkbox__inner,
+.el-radio__inner {
+  border-color: var(--bd-strong);
+}
+.el-checkbox__label,
+.el-radio__label {
+  color: var(--t2);
+  font-size: 13.5px;
+}
+
+/* ============ 标签 ============ */
+.el-tag {
+  border-radius: var(--r-sm);
+  font-weight: 550;
+}
+
+/* ============ 提示 ============ */
+.el-tooltip__popper,
+.el-alert {
+  border-radius: var(--r-md);
+}
+.el-alert {
+  padding: 10px 12px;
+}
